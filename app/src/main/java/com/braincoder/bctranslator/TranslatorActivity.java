@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.braincoder.bctranslator.databinding.ActivityTranslatorBinding;
@@ -22,8 +24,9 @@ import com.google.mlkit.nl.translate.TranslatorOptions;
 public class TranslatorActivity extends AppCompatActivity {
 
     ActivityTranslatorBinding binding;
+    TranslatorOptions translatorOptions;
     Translator translator;
-    Translator translatorInverse;
+    private String[] languages = new String[]{"English", "Urdu"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,46 +34,75 @@ public class TranslatorActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         init();
+        initButtonClicks();
+        setLanguageAdapters();
     }
 
     private void init(){
-        // Create an English-Urdu translator:
-        TranslatorOptions options = new TranslatorOptions.Builder()
+        // Create translator
+        translatorOptions = new TranslatorOptions.Builder()
                 .setSourceLanguage(TranslateLanguage.ENGLISH)
                 .setTargetLanguage(TranslateLanguage.URDU)
                 .build();
-        TranslatorOptions optionsInverse = new TranslatorOptions.Builder()
-                .setSourceLanguage(TranslateLanguage.URDU)
-                .setTargetLanguage(TranslateLanguage.ENGLISH)
-                .build();
-        translator = Translation.getClient(options);
-        translatorInverse = Translation.getClient(optionsInverse);
+        translator = Translation.getClient(translatorOptions);
 
-        // Download model if needed
-        translator.downloadModelIfNeeded().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.i("Success = ", "Model Downloaded");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(Exception e) {
-                Log.i("Failed = ", "Model download failed");
-            }
-        });
+//        // Download model if needed
+//        translator.downloadModelIfNeeded().addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                Log.i("Success = ", "Model Downloaded");
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(Exception e) {
+//                Log.i("Failed = ", "Model download failed");
+//            }
+//        });
 
-        // Initializing Buttons
-        binding.translateDownBtn.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void initButtonClicks(){
+        binding.translateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 translate(binding.sourceBox.getText().toString());
             }
         });
 
-        binding.translateUpBtn.setOnClickListener(new View.OnClickListener() {
+        binding.swapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                translateInverse(binding.targetBox.getText().toString());
+                int source = binding.sourceLanguage.getSelectedItemPosition();
+                int target = binding.targetLanguage.getSelectedItemPosition();
+
+                binding.sourceLanguage.setSelection(target);
+                binding.targetLanguage.setSelection(source);
+
+                changeLanguage();
+            }
+        });
+
+        binding.sourceLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                changeLanguage();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        binding.targetLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                changeLanguage();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -138,6 +170,14 @@ public class TranslatorActivity extends AppCompatActivity {
 
     }
 
+    private void setLanguageAdapters(){
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, languages);
+        binding.sourceLanguage.setAdapter(arrayAdapter);
+        binding.targetLanguage.setAdapter(arrayAdapter);
+
+        binding.targetLanguage.setSelection(1);
+    }
+
     private void translate(String text){
         translator.translate(text)
                 .addOnSuccessListener(
@@ -159,23 +199,26 @@ public class TranslatorActivity extends AppCompatActivity {
                         });
     }
 
-    private void translateInverse(String text){
-        translatorInverse.translate(text)
-                .addOnSuccessListener(
-                        new OnSuccessListener() {
-                            @Override
-                            public void onSuccess(Object o) {
-                                binding.sourceBox.setText(o.toString());
-                            }
-                        })
-                .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(Exception e) {
-                                Log.i("Error = ", e.getMessage());
-                                Toast.makeText(TranslatorActivity.this, "Error in converting", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+    private void changeLanguage(){
+        String fromLanguage = languages[binding.sourceLanguage.getSelectedItemPosition()];
+        String toLanguage = languages[binding.targetLanguage.getSelectedItemPosition()];
+
+        translatorOptions = new TranslatorOptions.Builder()
+                .setSourceLanguage(getLanguageCode(fromLanguage))
+                .setTargetLanguage(getLanguageCode(toLanguage))
+                .build();
+        translator = Translation.getClient(translatorOptions);
+    }
+
+    private String getLanguageCode(String language){
+        switch (language){
+            case "English":
+                return TranslateLanguage.ENGLISH;
+            case "Urdu":
+                return TranslateLanguage.URDU;
+            default:
+                return TranslateLanguage.ENGLISH;
+        }
     }
 
     private void hideKeyboard(){

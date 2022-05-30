@@ -23,10 +23,11 @@ import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
 
 public class MainActivity extends AppCompatActivity {
+    public static String title = "Hello";
 
     ActivityMainBinding binding;
     Translator translator;
-//    RemoteModelManager modelManager;
+    RemoteModelManager modelManager;
     ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +35,20 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        init();
+    }
+
+    private void init(){
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Downloading");
         progressDialog.setMessage("Downloading Language Model");
         progressDialog.setCancelable(false);
-        progressDialog.show();
+//        progressDialog.show();
 
+        modelManager = RemoteModelManager.getInstance();
+    }
 
-//        modelManager = RemoteModelManager.getInstance();
-
+    private void downloadModelIfNeeded(){
         // Create an English-Urdu translator:
         TranslatorOptions options = new TranslatorOptions.Builder()
                 .setSourceLanguage(TranslateLanguage.ENGLISH)
@@ -68,25 +74,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    private void downloadModel(){
-//        TranslateRemoteModel model =
-//                new TranslateRemoteModel.Builder(TranslateLanguage.ENGLISH).build();
-//
-//        DownloadConditions conditions = new DownloadConditions.Builder()
-//                .build();
-//
-//        modelManager.download(model, conditions)
-//                .addOnSuccessListener(new OnSuccessListener() {
-//                    @Override
-//                    public void onSuccess(Object o) {
-//                        Log.i("Success = ", "Model Downloaded");
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(Exception e) {
-//                        Log.i("Failed = ", "Model download failed");
-//                    }
-//                });
-//    }
+    private void downloadModel(){
+        TranslateRemoteModel model =
+                new TranslateRemoteModel.Builder(TranslateLanguage.ENGLISH).build();
+
+        DownloadConditions conditions = new DownloadConditions.Builder()
+                .build();
+
+        modelManager.download(model, conditions)
+                .addOnSuccessListener(new OnSuccessListener() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        Log.i("Success = ", "Model Downloaded");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.i("Failed = ", "Model download failed");
+                    }
+                });
+    }
 }
