@@ -1,34 +1,34 @@
 package com.braincoder.bctranslator;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.ArrayAdapter;
 
+import com.braincoder.bctranslator.Models.Languages;
 import com.braincoder.bctranslator.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.mlkit.common.model.DownloadConditions;
 import com.google.mlkit.common.model.RemoteModelManager;
-import com.google.mlkit.common.sdkinternal.model.RemoteModelDownloadManager;
 import com.google.mlkit.nl.translate.TranslateLanguage;
 import com.google.mlkit.nl.translate.TranslateRemoteModel;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
 
-public class MainActivity extends AppCompatActivity {
-    public static String title = "Hello";
+import java.util.ArrayList;
+import java.util.List;
 
+public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
-    Translator translator;
-    RemoteModelManager modelManager;
-    ProgressDialog progressDialog;
+    SharedPreferences prefs;
+    List<Languages> list;
+    DB db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,42 +39,92 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init(){
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Downloading");
-        progressDialog.setMessage("Downloading Language Model");
-        progressDialog.setCancelable(false);
-//        progressDialog.show();
+        prefs = getSharedPreferences("prefs", MODE_PRIVATE);
 
-        modelManager = RemoteModelManager.getInstance();
-    }
+        boolean isFirstTime = prefs.getBoolean("isFirstTime", true);
+        if(isFirstTime){
+            db = new DB(this);
 
-    private void downloadModelIfNeeded(){
-        // Create an English-Urdu translator:
-        TranslatorOptions options = new TranslatorOptions.Builder()
-                .setSourceLanguage(TranslateLanguage.ENGLISH)
-                .setTargetLanguage(TranslateLanguage.URDU)
-                .build();
-        translator = Translation.getClient(options);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("isFirstTime", false);
+            editor.commit();
 
-        translator.downloadModelIfNeeded()
-        .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                progressDialog.dismiss();
-
-                Intent intent = new Intent(MainActivity.this, TranslatorActivity.class);
-                startActivity(intent);
-                finishAffinity();
+            Languages language = new Languages();
+            for (String lan : HP.installedLanguages){
+                language.setLanguage(lan);
+                db.addLanguage(language);
             }
-        }).addOnFailureListener(new OnFailureListener() {
+
+            list = new ArrayList<>();
+            for(String lan: HP.languages){
+                list.add(new Languages(lan));
+            }
+
+            setLanguageAdapters();
+        }else {
+            startTranslatorActivity();
+        }
+
+        binding.downloadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.i("Failed = ", "Model download failed");
+            public void onClick(View view) {
+                binding.downloadLayout.setVisibility(View.VISIBLE);
+
+                String fromLanguage = HP.getLanguageCode(HP.languages[binding.sourceLanguage.getSelectedItemPosition()]);
+                String toLanguage = HP.getLanguageCode(HP.languages[binding.targetLanguage.getSelectedItemPosition()]);
+
+                TranslatorOptions options = new TranslatorOptions.Builder()
+                        .setSourceLanguage(fromLanguage)
+                        .setTargetLanguage(toLanguage)
+                        .build();
+                Translator translator = Translation.getClient(options);
+
+                // Download model if needed
+                translator.downloadModelIfNeeded().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        startTranslatorActivity();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.i("Failed = ", "Model download failed");
+                    }
+                });
             }
         });
+
+        binding.swapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int source = binding.sourceLanguage.getSelectedItemPosition();
+                int target = binding.targetLanguage.getSelectedItemPosition();
+
+                binding.sourceLanguage.setSelection(target);
+                binding.targetLanguage.setSelection(source);
+            }
+        });
+
+    }
+
+    private void startTranslatorActivity(){
+        Intent intent = new Intent(MainActivity.this, TranslatorActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void setLanguageAdapters(){
+        ArrayAdapter<Languages> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        binding.sourceLanguage.setAdapter(arrayAdapter);
+        binding.targetLanguage.setAdapter(arrayAdapter);
+
+        binding.sourceLanguage.setSelection(0);
+        binding.targetLanguage.setSelection(1);
     }
 
     private void downloadModel(){
+        RemoteModelManager modelManager = RemoteModelManager.getInstance();
+
         TranslateRemoteModel model =
                 new TranslateRemoteModel.Builder(TranslateLanguage.ENGLISH).build();
 
