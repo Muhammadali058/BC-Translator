@@ -1,4 +1,4 @@
-package com.braincoder.bctranslator;
+package com.braincoder.bctranslator.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import com.braincoder.bctranslator.R;
 
 public class ToLanguageActivity extends AppCompatActivity {
 

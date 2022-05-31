@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">BC Translator</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 
     <string-array name="languages">
         <item>English</item>

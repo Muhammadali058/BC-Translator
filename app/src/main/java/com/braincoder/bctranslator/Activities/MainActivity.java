@@ -1,4 +1,4 @@
-package com.braincoder.bctranslator;
+package com.braincoder.bctranslator.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 
 import com.braincoder.bctranslator.Models.Languages;
+import com.braincoder.bctranslator.Utils.DB;
+import com.braincoder.bctranslator.Utils.HP;
 import com.braincoder.bctranslator.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -83,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 translator.downloadModelIfNeeded().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("fromLanguage", HP.languages[binding.sourceLanguage.getSelectedItemPosition()]);
+                        editor.putString("toLanguage", HP.languages[binding.targetLanguage.getSelectedItemPosition()]);
+                        editor.commit();
+
                         startTranslatorActivity();
                     }
                 }).addOnFailureListener(new OnFailureListener() {

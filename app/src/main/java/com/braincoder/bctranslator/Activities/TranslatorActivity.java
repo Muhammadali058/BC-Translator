@@ -1,11 +1,16 @@
-package com.braincoder.bctranslator;
+package com.braincoder.bctranslator.Activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -13,9 +18,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.braincoder.bctranslator.Models.Languages;
+import com.braincoder.bctranslator.Utils.DB;
+import com.braincoder.bctranslator.Utils.HP;
 import com.braincoder.bctranslator.databinding.ActivityTranslatorBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
@@ -27,6 +35,7 @@ public class TranslatorActivity extends AppCompatActivity {
 
     ActivityTranslatorBinding binding;
     TranslatorOptions translatorOptions;
+    SharedPreferences prefs;
     Translator translator;
     ArrayAdapter<Languages> languagesAdapter;
     List<Languages> languages;
@@ -39,14 +48,51 @@ public class TranslatorActivity extends AppCompatActivity {
         binding = ActivityTranslatorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        runFirstTime();
         init();
+        setNavigationDrawer();
         initButtonClicks();
         setLanguageAdapters();
         downloadModelIfNeeded();
     }
 
+    private void runFirstTime(){
+        prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+
+        boolean isFirstTime = prefs.getBoolean("isFirstTime", true);
+        if(isFirstTime){
+            Intent intent = new Intent(TranslatorActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     private void init(){
         db = new DB(this);
+    }
+
+    private void setNavigationDrawer(){
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawerLayout, getSupportActionBar(),R.string.open,R.string.close);
+        binding.drawerLayout.addDrawerListener(actionBarDrawerToggle);;
+        actionBarDrawerToggle.syncState();
+
+        binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.home:
+                        loadFragment(new Fragment1());
+                        break;
+                    case R.id.dashboard:
+                        loadFragment(new Fragment2());
+                        break;
+                    case R.id.notifications:
+                        loadFragment(new Fragment3());
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     private void initButtonClicks(){

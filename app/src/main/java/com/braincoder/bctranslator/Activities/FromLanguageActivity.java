@@ -1,8 +1,10 @@
-package com.braincoder.bctranslator;
+package com.braincoder.bctranslator.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.braincoder.bctranslator.R;
 
 public class FromLanguageActivity extends AppCompatActivity {
 

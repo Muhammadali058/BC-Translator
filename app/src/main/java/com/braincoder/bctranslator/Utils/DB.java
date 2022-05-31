@@ -1,4 +1,4 @@
-package com.braincoder.bctranslator;
+package com.braincoder.bctranslator.Utils;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
