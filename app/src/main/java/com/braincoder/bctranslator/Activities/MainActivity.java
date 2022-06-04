@@ -129,27 +129,4 @@ public class MainActivity extends AppCompatActivity {
         binding.targetLanguage.setSelection(1);
     }
 
-    private void downloadModel(){
-        RemoteModelManager modelManager = RemoteModelManager.getInstance();
-
-        TranslateRemoteModel model =
-                new TranslateRemoteModel.Builder(TranslateLanguage.ENGLISH).build();
-
-        DownloadConditions conditions = new DownloadConditions.Builder()
-                .build();
-
-        modelManager.download(model, conditions)
-                .addOnSuccessListener(new OnSuccessListener() {
-                    @Override
-                    public void onSuccess(Object o) {
-                        Log.i("Success = ", "Model Downloaded");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.i("Failed = ", "Model download failed");
-                    }
-                });
-    }
 }

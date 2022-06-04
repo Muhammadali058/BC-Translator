@@ -26,6 +26,8 @@ import com.braincoder.bctranslator.databinding.ActivityTranslatorBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.mlkit.nl.translate.TranslateLanguage;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
@@ -57,6 +59,15 @@ public class TranslatorActivity extends AppCompatActivity {
         initButtonClicks();
         setLanguageAdapters();
         downloadModelIfNeeded();
+
+        binding.btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String language = TranslateLanguage.fromLanguageTag("ur");
+                Toast.makeText(TranslatorActivity.this, language, Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     private void runFirstTime(){
