@@ -1,6 +1,5 @@
 package com.braincoder.bctranslator.Activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,8 +17,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.braincoder.bctranslator.Models.Languages;
+import com.braincoder.bctranslator.R;
 import com.braincoder.bctranslator.Utils.DB;
 import com.braincoder.bctranslator.Utils.HP;
+import com.braincoder.bctranslator.databinding.ActivityMainBinding;
+import com.braincoder.bctranslator.databinding.ActivityToLanguageBinding;
 import com.braincoder.bctranslator.databinding.ActivityTranslatorBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,6 +49,7 @@ public class TranslatorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityTranslatorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
 
         runFirstTime();
         init();
@@ -72,22 +75,22 @@ public class TranslatorActivity extends AppCompatActivity {
     }
 
     private void setNavigationDrawer(){
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawerLayout, getSupportActionBar(),R.string.open,R.string.close);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar,R.string.open, R.string.close);
         binding.drawerLayout.addDrawerListener(actionBarDrawerToggle);;
         actionBarDrawerToggle.syncState();
 
         binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.home:
-                        loadFragment(new Fragment1());
+//                        loadFragment(new Fragment1());
                         break;
                     case R.id.dashboard:
-                        loadFragment(new Fragment2());
+//                        loadFragment(new Fragment2());
                         break;
                     case R.id.notifications:
-                        loadFragment(new Fragment3());
+//                        loadFragment(new Fragment3());
                         break;
                 }
                 return true;

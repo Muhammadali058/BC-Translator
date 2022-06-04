@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group>
         <item
             android:id="@+id/home"
             android:title="Home"/>
@@ -17,18 +17,18 @@
             android:title="Notifications"/>
     </group>
 
-    <item android:title="Comunications">
-        <menu>
-            <group>
-                <item
-                    android:id="@+id/share"
-                    android:title="Share"/>
+<!--    <item android:title="Comunications">-->
+<!--        <menu>-->
+<!--            <group>-->
+<!--                <item-->
+<!--                    android:id="@+id/share"-->
+<!--                    android:title="Share"/>-->
 
-                <item
-                    android:id="@+id/send"
-                    android:title="Send"/>
-            </group>
-        </menu>
-    </item>
+<!--                <item-->
+<!--                    android:id="@+id/send"-->
+<!--                    android:title="Send"/>-->
+<!--            </group>-->
+<!--        </menu>-->
+<!--    </item>-->
 
 </menu>
