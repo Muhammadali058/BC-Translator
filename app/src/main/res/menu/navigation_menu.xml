@@ -5,16 +5,20 @@
 
     <group>
         <item
-            android:id="@+id/home"
-            android:title="Home"/>
+            android:id="@+id/languages"
+            android:title="Languages"/>
 
         <item
-            android:id="@+id/dashboard"
-            android:title="Dashboard"/>
+            android:id="@+id/settings"
+            android:title="Settings"/>
 
         <item
-            android:id="@+id/notifications"
-            android:title="Notifications"/>
+            android:id="@+id/about"
+            android:title="About"/>
+
+        <item
+            android:id="@+id/exit"
+            android:title="Exit"/>
     </group>
 
 <!--    <item android:title="Comunications">-->

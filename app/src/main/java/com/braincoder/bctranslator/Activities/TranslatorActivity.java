@@ -1,7 +1,9 @@
 package com.braincoder.bctranslator.Activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -58,16 +60,16 @@ public class TranslatorActivity extends AppCompatActivity {
         setNavigationDrawer();
         initButtonClicks();
         setLanguageAdapters();
+
+        // Create translator
+        String fromLanguage = HP.getLanguageCode(languages.get(binding.sourceLanguage.getSelectedItemPosition()).getLanguage());
+        String toLanguage = HP.getLanguageCode(languages.get(binding.targetLanguage.getSelectedItemPosition()).getLanguage());
+        translatorOptions = new TranslatorOptions.Builder()
+                .setSourceLanguage(fromLanguage)
+                .setTargetLanguage(toLanguage)
+                .build();
+        translator = Translation.getClient(translatorOptions);
         downloadModelIfNeeded();
-
-        binding.btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String language = TranslateLanguage.fromLanguageTag("ur");
-                Toast.makeText(TranslatorActivity.this, language, Toast.LENGTH_SHORT).show();
-
-            }
-        });
     }
 
     private void runFirstTime(){
@@ -94,14 +96,21 @@ public class TranslatorActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.home:
-//                        loadFragment(new Fragment1());
+                    case R.id.languages:
+                        Intent languageIntent = new Intent(TranslatorActivity.this, LanguagesActivity.class);
+                        startActivityForResult(languageIntent, 123);
+                        closeDrawer();
                         break;
-                    case R.id.dashboard:
-//                        loadFragment(new Fragment2());
+                    case R.id.settings:
+                        Intent settingsIntent = new Intent(TranslatorActivity.this, SettingsActivity.class);
+                        startActivity(settingsIntent);
+                        closeDrawer();
                         break;
-                    case R.id.notifications:
-//                        loadFragment(new Fragment3());
+                    case R.id.about:
+                        closeDrawer();
+                        break;
+                    case R.id.exit:
+                        finish();
                         break;
                 }
                 return true;
@@ -231,17 +240,7 @@ public class TranslatorActivity extends AppCompatActivity {
     }
 
     private void downloadModelIfNeeded(){
-        String fromLanguage = HP.getLanguageCode(languages.get(binding.sourceLanguage.getSelectedItemPosition()).getLanguage());
-        String toLanguage = HP.getLanguageCode(languages.get(binding.targetLanguage.getSelectedItemPosition()).getLanguage());
-
-        // Create translator
-        translatorOptions = new TranslatorOptions.Builder()
-                .setSourceLanguage(fromLanguage)
-                .setTargetLanguage(toLanguage)
-                .build();
-        translator = Translation.getClient(translatorOptions);
-
-        // Download model if needed
+        isModelDownloaded = false;
         translator.downloadModelIfNeeded().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -290,12 +289,27 @@ public class TranslatorActivity extends AppCompatActivity {
                 .setTargetLanguage(HP.getLanguageCode(toLanguage))
                 .build();
         translator = Translation.getClient(translatorOptions);
+        downloadModelIfNeeded();
+    }
+
+    private void closeDrawer(){
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
     }
 
     private void hideKeyboard(){
         InputMethodManager inputMethodManager =(InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if(inputMethodManager.isAcceptingText()){
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 123 && data != null){
+            Languages language = (Languages) data.getSerializableExtra("language");
+            languages.add(language);
+            languagesAdapter.notifyDataSetChanged();
         }
     }
 

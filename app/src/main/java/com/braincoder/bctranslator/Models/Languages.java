@@ -1,14 +1,22 @@
 package com.braincoder.bctranslator.Models;
 
-public class Languages {
+import java.io.Serializable;
+
+public class Languages implements Serializable {
     int id;
     String language;
+    String languageCode;
 
     public Languages() {
     }
 
     public Languages(String language) {
         this.language = language;
+    }
+
+    public Languages(String language, String languageCode) {
+        this.language = language;
+        this.languageCode = languageCode;
     }
 
     public Languages(int id, String language) {
@@ -30,6 +38,14 @@ public class Languages {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 
     @Override

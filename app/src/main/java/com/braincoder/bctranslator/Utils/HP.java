@@ -1,8 +1,10 @@
 package com.braincoder.bctranslator.Utils;
 
-import androidx.annotation.NonNull;
+import com.braincoder.bctranslator.Models.Languages;
 
-import com.google.mlkit.nl.translate.TranslateLanguage;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class HP {
 
@@ -130,20 +132,33 @@ public class HP {
         "cy",
     };
 
-    public static String[] installedLanguages = new String[]{
-            "English",
-            "Urdu",
-    };
+    private static List<Languages> languagesList;
+    static {
+        languagesList = new ArrayList<>();
+        for (int i = 0; i < languages.length; i++) {
+            String language = languages[i].substring(0, 1).toUpperCase() + languages[i].substring(1).toLowerCase();
+            languagesList.add(new Languages(language, languageCodes[i]));
+        }
+    }
+
+    public static List<Languages> getAllLanguages(){
+        return languagesList;
+    }
 
     public static String getLanguageCode(String language){
-        switch (language){
-            case "English":
-                return TranslateLanguage.ENGLISH;
-            case "Urdu":
-                return TranslateLanguage.URDU;
-            default:
-                return TranslateLanguage.ENGLISH;
+        for (Languages languages : languagesList){
+            if(languages.getLanguage().equalsIgnoreCase(language)){
+                return languages.getLanguageCode();
+            }
         }
+
+//        for (int i = 0; i < language.length(); i++) {
+//            if(languages[i].equalsIgnoreCase(language)){
+//                return languageCodes[i];
+//            }
+//        }
+
+        return null;
     }
 
 }

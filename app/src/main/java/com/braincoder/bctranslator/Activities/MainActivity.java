@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.braincoder.bctranslator.Models.Languages;
 import com.braincoder.bctranslator.Utils.DB;
@@ -52,10 +53,14 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
 
             Languages language = new Languages();
-            for (String lan : HP.installedLanguages){
-                language.setLanguage(lan);
-                db.addLanguage(language);
-            }
+            language.setLanguage("English");
+            language.setLanguageCode("en");
+            db.addLanguage(language);
+
+            language.setLanguage("Urdu");
+            language.setLanguageCode("ur");
+            db.addLanguage(language);
+
 
             list = new ArrayList<>();
             for(String lan: HP.languages){
@@ -89,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("fromLanguage", HP.languages[binding.sourceLanguage.getSelectedItemPosition()]);
                         editor.putString("toLanguage", HP.languages[binding.targetLanguage.getSelectedItemPosition()]);
                         editor.commit();
+
+                        Toast.makeText(MainActivity.this, "Model Downloaded", Toast.LENGTH_SHORT).show();
 
                         startTranslatorActivity();
                     }
@@ -125,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
         binding.sourceLanguage.setAdapter(arrayAdapter);
         binding.targetLanguage.setAdapter(arrayAdapter);
 
-        binding.sourceLanguage.setSelection(0);
-        binding.targetLanguage.setSelection(1);
+        binding.sourceLanguage.setSelection(11);
+        binding.targetLanguage.setSelection(56);
     }
 
 }

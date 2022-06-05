@@ -25,7 +25,8 @@ public class DB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTable = "create table " + TABLE_LANGUAGES +
                 "(id integer primary key autoincrement," +
-                "language text)";
+                "language text," +
+                "languageCode text)";
 
         db.execSQL(createTable);
     }
@@ -51,6 +52,7 @@ public class DB extends SQLiteOpenHelper {
 
                 language.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 language.setLanguage(cursor.getString(cursor.getColumnIndex("language")));
+                language.setLanguageCode(cursor.getString(cursor.getColumnIndex("languageCode")));
 
                 list.add(language);
             }
@@ -64,6 +66,7 @@ public class DB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("language", language.getLanguage());
+        values.put("languageCode", language.getLanguageCode());
 
         int id = (int) db.insert(TABLE_LANGUAGES, null, values);
         db.close();
@@ -73,6 +76,7 @@ public class DB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("language", language.getLanguage());
+        values.put("languageCode", language.getLanguageCode());
 
         db.update(TABLE_LANGUAGES, values, "id=?", new String[]{String.valueOf(language.getId())});
         db.close();

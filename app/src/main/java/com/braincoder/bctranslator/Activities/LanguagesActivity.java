@@ -1,21 +1,28 @@
 package com.braincoder.bctranslator.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.braincoder.bctranslator.Adapters.LanguagesAdapter;
-import com.braincoder.bctranslator.Models.LanguageHolder;
+import com.braincoder.bctranslator.Models.Languages;
 import com.braincoder.bctranslator.R;
+import com.braincoder.bctranslator.Utils.DB;
+import com.braincoder.bctranslator.Utils.HP;
 import com.braincoder.bctranslator.databinding.ActivityLanguagesBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.mlkit.common.model.DownloadConditions;
 import com.google.mlkit.common.model.RemoteModelManager;
-import com.google.mlkit.nl.translate.TranslateLanguage;
 import com.google.mlkit.nl.translate.TranslateRemoteModel;
 
 import java.util.ArrayList;
@@ -25,27 +32,32 @@ public class LanguagesActivity extends AppCompatActivity {
 
     ActivityLanguagesBinding binding;
     LanguagesAdapter languagesAdapter;
-    List<LanguageHolder> list;
+    List<Languages> list;
+    DB db;
+    ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLanguagesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         init();
     }
 
     private void init(){
-        list = new ArrayList<>();
+        db = new DB(this);
+        dialog = new ProgressDialog(this);
 
-        list.add(new LanguageHolder(R.drawable.english, "English"));
-        list.add(new LanguageHolder(R.drawable.urdu, "Urdu"));
-        list.add(new LanguageHolder(R.drawable.hindi, "Hindi"));
+        list = new ArrayList<>();
+        list.addAll(HP.getAllLanguages());
 
         languagesAdapter = new LanguagesAdapter(this, list, new LanguagesAdapter.OnClickListener() {
             @Override
-            public void onClick(String language) {
-                Toast.makeText(LanguagesActivity.this, language, Toast.LENGTH_SHORT).show();
+            public void onClick(Languages languageHolder) {
+                addLanguage(languageHolder);
             }
         });
 
@@ -53,27 +65,46 @@ public class LanguagesActivity extends AppCompatActivity {
         binding.recyclerView.setAdapter(languagesAdapter);
     }
 
-    private void downloadModel(){
-        RemoteModelManager modelManager = RemoteModelManager.getInstance();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_view_menu, menu);
 
-        TranslateRemoteModel model =
-                new TranslateRemoteModel.Builder(TranslateLanguage.ENGLISH).build();
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
-        DownloadConditions conditions = new DownloadConditions.Builder()
-                .build();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-        modelManager.download(model, conditions)
-                .addOnSuccessListener(new OnSuccessListener() {
-                    @Override
-                    public void onSuccess(Object o) {
-                        Log.i("Success = ", "Model Downloaded");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.i("Failed = ", "Model download failed");
-                    }
-                });
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                languagesAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return true;
+    }
+
+    private void addLanguage(Languages languages){
+        db.addLanguage(languages);
+
+        Intent intent = new Intent();
+        intent.putExtra("language", languages);
+        setResult(123, intent);
+
+        onBackPressed();
     }
 }
