@@ -29,30 +29,31 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
+
         <activity
             android:name=".Activities.FromLanguageActivity"
             android:exported="true"
-            android:label="To English">
+            android:label="Convert"
+            android:excludeFromRecents="true"
+            android:theme="@style/UserDialog">
             <intent-filter>
                 <action android:name="android.intent.action.PROCESS_TEXT" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activities.ToLanguageActivity"
             android:exported="true"
             android:label="To Urdu">
             <intent-filter>
                 <action android:name="android.intent.action.PROCESS_TEXT" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activities.TranslatorActivity"
             android:exported="true">
