@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.braincoder.bctranslator.Adapters.LanguagesAdapter;
 import com.braincoder.bctranslator.Models.Languages;
@@ -19,11 +18,6 @@ import com.braincoder.bctranslator.R;
 import com.braincoder.bctranslator.Utils.DB;
 import com.braincoder.bctranslator.Utils.HP;
 import com.braincoder.bctranslator.databinding.ActivityLanguagesBinding;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.mlkit.common.model.DownloadConditions;
-import com.google.mlkit.common.model.RemoteModelManager;
-import com.google.mlkit.nl.translate.TranslateRemoteModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +46,7 @@ public class LanguagesActivity extends AppCompatActivity {
         dialog = new ProgressDialog(this);
 
         list = new ArrayList<>();
-        list.addAll(HP.getAllLanguages());
+        list.addAll(getAllLanguages());
 
         languagesAdapter = new LanguagesAdapter(this, list, new LanguagesAdapter.OnClickListener() {
             @Override
@@ -65,9 +59,22 @@ public class LanguagesActivity extends AppCompatActivity {
         binding.recyclerView.setAdapter(languagesAdapter);
     }
 
+    public List<Languages> getAllLanguages(){
+        List<Languages> languages = new ArrayList<>();
+
+        for (int i = 0; i < HP.languages.length; i++) {
+            String language = HP.languages[i].substring(0, 1).toUpperCase() + HP.languages[i].substring(1).toLowerCase();
+
+            if(!db.isLanguageExists(language))
+                languages.add(new Languages(language, HP.languageCodes[i]));
+        }
+
+        return languages;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_view_menu, menu);
+        getMenuInflater().inflate(R.menu.searchview_menu, menu);
 
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);

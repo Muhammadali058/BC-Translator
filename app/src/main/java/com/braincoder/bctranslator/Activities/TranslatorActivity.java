@@ -22,14 +22,10 @@ import com.braincoder.bctranslator.Models.Languages;
 import com.braincoder.bctranslator.R;
 import com.braincoder.bctranslator.Utils.DB;
 import com.braincoder.bctranslator.Utils.HP;
-import com.braincoder.bctranslator.databinding.ActivityMainBinding;
-import com.braincoder.bctranslator.databinding.ActivityToLanguageBinding;
 import com.braincoder.bctranslator.databinding.ActivityTranslatorBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.FirebaseApiNotAvailableException;
-import com.google.mlkit.nl.translate.TranslateLanguage;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
@@ -62,8 +58,8 @@ public class TranslatorActivity extends AppCompatActivity {
         setLanguageAdapters();
 
         // Create translator
-        String fromLanguage = HP.getLanguageCode(languages.get(binding.sourceLanguage.getSelectedItemPosition()).getLanguage());
-        String toLanguage = HP.getLanguageCode(languages.get(binding.targetLanguage.getSelectedItemPosition()).getLanguage());
+        String fromLanguage = HP.getLanguageCode(this, languages.get(binding.sourceLanguage.getSelectedItemPosition()).getLanguage());
+        String toLanguage = HP.getLanguageCode(this, languages.get(binding.targetLanguage.getSelectedItemPosition()).getLanguage());
         translatorOptions = new TranslatorOptions.Builder()
                 .setSourceLanguage(fromLanguage)
                 .setTargetLanguage(toLanguage)
@@ -103,7 +99,7 @@ public class TranslatorActivity extends AppCompatActivity {
                         break;
                     case R.id.settings:
                         Intent settingsIntent = new Intent(TranslatorActivity.this, SettingsActivity.class);
-                        startActivity(settingsIntent);
+                        startActivityForResult(settingsIntent, 124);
                         closeDrawer();
                         break;
                     case R.id.about:
@@ -235,8 +231,22 @@ public class TranslatorActivity extends AppCompatActivity {
         binding.sourceLanguage.setAdapter(languagesAdapter);
         binding.targetLanguage.setAdapter(languagesAdapter);
 
-        binding.sourceLanguage.setSelection(0);
-        binding.targetLanguage.setSelection(1);
+        setDefaultLanguages();
+    }
+
+    private void setDefaultLanguages(){
+        String fromLanguage = prefs.getString("fromLanguage", "English");
+        String toLanguage = prefs.getString("toLanguage", "Urdu");
+
+        for (int i = 0; i < languages.size(); i++) {
+            if(languages.get(i).getLanguage().equalsIgnoreCase(fromLanguage)){
+                binding.sourceLanguage.setSelection(i);
+            }
+
+            if(languages.get(i).getLanguage().equalsIgnoreCase(toLanguage)){
+                binding.targetLanguage.setSelection(i);
+            }
+        }
     }
 
     private void downloadModelIfNeeded(){
@@ -276,7 +286,7 @@ public class TranslatorActivity extends AppCompatActivity {
                                 }
                             });
         }else {
-            Toast.makeText(this, "Please until model is downloading", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please wait until model is downloading", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -285,8 +295,8 @@ public class TranslatorActivity extends AppCompatActivity {
         String toLanguage = languages.get(binding.targetLanguage.getSelectedItemPosition()).getLanguage();
 
         translatorOptions = new TranslatorOptions.Builder()
-                .setSourceLanguage(HP.getLanguageCode(fromLanguage))
-                .setTargetLanguage(HP.getLanguageCode(toLanguage))
+                .setSourceLanguage(HP.getLanguageCode(this, fromLanguage))
+                .setTargetLanguage(HP.getLanguageCode(this, toLanguage))
                 .build();
         translator = Translation.getClient(translatorOptions);
         downloadModelIfNeeded();
@@ -310,6 +320,8 @@ public class TranslatorActivity extends AppCompatActivity {
             Languages language = (Languages) data.getSerializableExtra("language");
             languages.add(language);
             languagesAdapter.notifyDataSetChanged();
+        }else if(requestCode == 124){
+            setDefaultLanguages();
         }
     }
 

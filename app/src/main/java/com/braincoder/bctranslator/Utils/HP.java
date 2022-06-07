@@ -1,5 +1,7 @@
 package com.braincoder.bctranslator.Utils;
 
+import android.content.Context;
+
 import com.braincoder.bctranslator.Models.Languages;
 
 import java.util.ArrayList;
@@ -132,31 +134,14 @@ public class HP {
         "cy",
     };
 
-    private static List<Languages> languagesList;
-    static {
-        languagesList = new ArrayList<>();
-        for (int i = 0; i < languages.length; i++) {
-            String language = languages[i].substring(0, 1).toUpperCase() + languages[i].substring(1).toLowerCase();
-            languagesList.add(new Languages(language, languageCodes[i]));
-        }
-    }
+    public static String getLanguageCode(Context context, String language){
+        DB db = new DB(context);
 
-    public static List<Languages> getAllLanguages(){
-        return languagesList;
-    }
-
-    public static String getLanguageCode(String language){
-        for (Languages languages : languagesList){
+        for (Languages languages : db.getAllLanguages()){
             if(languages.getLanguage().equalsIgnoreCase(language)){
                 return languages.getLanguageCode();
             }
         }
-
-//        for (int i = 0; i < language.length(); i++) {
-//            if(languages[i].equalsIgnoreCase(language)){
-//                return languageCodes[i];
-//            }
-//        }
 
         return null;
     }

@@ -72,6 +72,20 @@ public class DB extends SQLiteOpenHelper {
         db.close();
     }
 
+    public boolean isLanguageExists(String language){
+        boolean isExists = false;
+        SQLiteDatabase db = getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("select * from " + TABLE_LANGUAGES + " where language=?", new String[]{language});
+        if(cursor != null && cursor.getCount() > 0){
+            isExists = true;
+        }
+        
+        cursor.close();
+        db.close();
+        return isExists;
+    }
+
     public void updateLanguage(Languages language){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();

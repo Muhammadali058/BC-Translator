@@ -2,6 +2,7 @@ package com.braincoder.bctranslator.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -77,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 binding.downloadLayout.setVisibility(View.VISIBLE);
 
-                String fromLanguage = HP.getLanguageCode(HP.languages[binding.sourceLanguage.getSelectedItemPosition()]);
-                String toLanguage = HP.getLanguageCode(HP.languages[binding.targetLanguage.getSelectedItemPosition()]);
+                String fromLanguage = HP.getLanguageCode(MainActivity.this, HP.languages[binding.sourceLanguage.getSelectedItemPosition()]);
+                String toLanguage = HP.getLanguageCode(MainActivity.this, HP.languages[binding.targetLanguage.getSelectedItemPosition()]);
 
                 TranslatorOptions options = new TranslatorOptions.Builder()
                         .setSourceLanguage(fromLanguage)
