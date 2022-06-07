@@ -73,7 +73,7 @@ public class DialogActivity extends AppCompatActivity {
         binding.translateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                translate(binding.inputBox.getText().toString());
+                translate(binding.sourceBox.getText().toString());
             }
         });
 
@@ -114,34 +114,65 @@ public class DialogActivity extends AppCompatActivity {
             }
         });
 
-        binding.copyBtn.setOnClickListener(new View.OnClickListener() {
+        binding.sourceCopyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clipData = ClipData.newPlainText("label", binding.outputBox.getText());
+                ClipData clipData = ClipData.newPlainText("label", binding.sourceBox.getText());
                 if(clipData != null)
                     clipboardManager.setPrimaryClip(clipData);
             }
         });
 
-        binding.cutBtn.setOnClickListener(new View.OnClickListener() {
+        binding.sourceCutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clipData = ClipData.newPlainText("label", binding.outputBox.getText());
+                ClipData clipData = ClipData.newPlainText("label", binding.sourceBox.getText());
                 if(clipData != null){
                     clipboardManager.setPrimaryClip(clipData);
-                    binding.outputBox.setText("");
+                    binding.sourceBox.setText("");
                 }
             }
         });
 
-        binding.pasteBtn.setOnClickListener(new View.OnClickListener() {
+        binding.sourcePasteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 CharSequence text = clipboardManager.getPrimaryClip().getItemAt(0).getText();
-                binding.outputBox.setText(text);
+                binding.sourceBox.setText(text);
+            }
+        });
+
+        binding.targetCopyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("label", binding.targetBox.getText());
+                if(clipData != null)
+                    clipboardManager.setPrimaryClip(clipData);
+            }
+        });
+
+        binding.targetCutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("label", binding.targetBox.getText());
+                if(clipData != null){
+                    clipboardManager.setPrimaryClip(clipData);
+                    binding.targetBox.setText("");
+                }
+            }
+        });
+
+        binding.targetPasteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                CharSequence text = clipboardManager.getPrimaryClip().getItemAt(0).getText();
+                binding.targetBox.setText(text);
             }
         });
 
@@ -175,7 +206,7 @@ public class DialogActivity extends AppCompatActivity {
                         new OnSuccessListener() {
                             @Override
                             public void onSuccess(Object o) {
-                                binding.outputBox.setText(o.toString());
+                                binding.targetBox.setText(o.toString());
                             }
                         })
                 .addOnFailureListener(
@@ -223,8 +254,8 @@ public class DialogActivity extends AppCompatActivity {
 
         if (intent.hasExtra(Intent.EXTRA_PROCESS_TEXT)) {
             String text = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString();
-            binding.inputBox.setText(text);
-            translate(binding.inputBox.getText().toString());
+            binding.sourceBox.setText(text);
+            translate(binding.sourceBox.getText().toString());
         }else {
 //            binding.inputBox.setText("How are you.");
 //            translate(binding.inputBox.getText().toString());

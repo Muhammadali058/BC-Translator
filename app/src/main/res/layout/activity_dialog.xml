@@ -46,64 +46,111 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/inputBox"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:background="@drawable/dialog_textbox_bg"
-                android:gravity="top|left"
-                android:padding="5dp"
-                android:layout_marginBottom="3dp"/>
-
-            <EditText
-                android:id="@+id/outputBox"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:background="@drawable/dialog_textbox_bg"
-                android:gravity="top|left"
-                android:padding="5dp"/>
-
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/sourceBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:background="@drawable/dialog_textbox_bg"
+                    android:gravity="top|left"
+                    android:padding="5dp"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="5dp"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="5dp">
 
                     <ImageView
-                        android:id="@+id/copyBtn"
+                        android:id="@+id/sourceCopyBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_copy" />
+                        android:src="@drawable/ic_copy"
+                        android:layout_marginTop="5dp"/>
 
                     <ImageView
-                        android:id="@+id/cutBtn"
+                        android:id="@+id/sourceCutBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_cut"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginTop="10dp"/>
 
                     <ImageView
-                        android:id="@+id/pasteBtn"
+                        android:id="@+id/sourcePasteBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_paste"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginTop="10dp"/>
 
                 </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/targetBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:background="@drawable/dialog_textbox_bg"
+                    android:gravity="top|left"
+                    android:padding="5dp"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="5dp"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="5dp">
+
+                    <ImageView
+                        android:id="@+id/targetCopyBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_copy"
+                        android:layout_marginTop="5dp"/>
+
+                    <ImageView
+                        android:id="@+id/targetCutBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_cut"
+                        android:layout_marginTop="10dp"/>
+
+                    <ImageView
+                        android:id="@+id/targetPasteBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_paste"
+                        android:layout_marginTop="10dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/translateBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="true"
                     android:src="@drawable/ic_refresh" />
 
             </RelativeLayout>
