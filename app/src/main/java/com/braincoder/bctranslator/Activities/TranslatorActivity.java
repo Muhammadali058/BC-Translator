@@ -50,6 +50,7 @@ public class TranslatorActivity extends AppCompatActivity {
         binding = ActivityTranslatorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setTitle("Translator");
 
         runFirstTime();
         init();
