@@ -1,4 +1,4 @@
-# Translator
+# Offline-Translator
 
 Offline App to Translate Text. It Supports More Than 50 Languages.
 
