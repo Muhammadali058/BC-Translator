@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">BC Translator</string>
+    <string name="app_name">Offline Translator</string>
+    <string name="app_id">ca-app-pub-7767494972294483~2079556510</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-7767494972294483/6553439404</string>
+
     <string name="open">Open</string>
     <string name="close">Close</string>
 

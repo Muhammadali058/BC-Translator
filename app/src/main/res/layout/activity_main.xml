@@ -17,12 +17,20 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"/>
 
-    <ImageView
-        android:id="@+id/swapBtn"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="First time you have to download model. \nSo you can enjoy offline translator."
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"/>
+
+    <ImageView
+        android:id="@+id/swapBtn"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_swap"
+        android:src="@drawable/swap"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"/>
 
@@ -86,7 +94,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="It may take upto 5 minutes."
+            android:text="It will take a few minutes."
             android:layout_gravity="center"/>
 
     </LinearLayout>

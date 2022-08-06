@@ -14,9 +14,9 @@
 
         <ImageView
             android:id="@+id/swapBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_swap"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/swap"
             android:layout_gravity="center"/>
 
         <RelativeLayout
@@ -71,23 +71,23 @@
 
                     <ImageView
                         android:id="@+id/sourceCopyBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_copy"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/copy"
                         android:layout_marginTop="5dp"/>
 
                     <ImageView
                         android:id="@+id/sourceCutBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_cut"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/cut"
                         android:layout_marginTop="10dp"/>
 
                     <ImageView
                         android:id="@+id/sourcePasteBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_paste"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/paste"
                         android:layout_marginTop="10dp"/>
 
                 </LinearLayout>
@@ -119,23 +119,23 @@
 
                     <ImageView
                         android:id="@+id/targetCopyBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_copy"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/copy"
                         android:layout_marginTop="5dp"/>
 
                     <ImageView
                         android:id="@+id/targetCutBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_cut"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/cut"
                         android:layout_marginTop="10dp"/>
 
                     <ImageView
                         android:id="@+id/targetPasteBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_paste"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/paste"
                         android:layout_marginTop="10dp"/>
 
                 </LinearLayout>
@@ -148,10 +148,10 @@
 
                 <ImageView
                     android:id="@+id/translateBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/ic_refresh" />
+                    android:src="@drawable/translate" />
 
             </RelativeLayout>
 

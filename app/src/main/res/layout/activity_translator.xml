@@ -8,7 +8,7 @@
     tools:context=".Activities.TranslatorActivity"
     android:id="@+id/drawerLayout">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -25,7 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:layout_below="@id/toolbar">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -41,10 +42,10 @@
 
                 <ImageView
                     android:id="@+id/swapBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/ic_swap" />
+                    android:src="@drawable/swap" />
 
                 <Spinner
                     android:id="@+id/targetLanguage"
@@ -59,6 +60,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -75,6 +77,8 @@
                         android:layout_weight="1"
                         android:textSize="14sp"
                         android:text="How are you."
+                        android:imeOptions="actionGo"
+                        android:inputType="text"
                         android:background="@drawable/textbox_bg"
                         android:gravity="top|left"
                         android:padding="5dp" />
@@ -88,22 +92,22 @@
 
                         <ImageView
                             android:id="@+id/sourceCopyBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_copy" />
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/copy" />
 
                         <ImageView
                             android:id="@+id/sourceCutBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_cut"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/cut"
                             android:layout_marginLeft="10dp"/>
 
                         <ImageView
                             android:id="@+id/sourcePasteBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_paste"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/paste"
                             android:layout_marginLeft="10dp"/>
 
                     </LinearLayout>
@@ -136,22 +140,22 @@
 
                         <ImageView
                             android:id="@+id/targetCopyBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_copy" />
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/copy" />
 
                         <ImageView
                             android:id="@+id/targetCutBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_cut"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/cut"
                             android:layout_marginLeft="10dp"/>
 
                         <ImageView
                             android:id="@+id/targetPasteBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_paste"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/paste"
                             android:layout_marginLeft="10dp"/>
 
                     </LinearLayout>
@@ -160,24 +164,39 @@
 
             </LinearLayout>
 
-            <Button
+            <ImageView
                 android:id="@+id/translateBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Translate"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/translate"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"/>
 
+<!--            <Button-->
+<!--                android:id="@+id/translateBtn"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Translate"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="5dp"/>-->
+
         </LinearLayout>
 
-    </LinearLayout>
+<!--        <com.google.android.gms.ads.AdView-->
+<!--            android:id="@+id/bannerAdView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:adSize="BANNER"-->
+<!--            app:adUnitId="@string/banner_ad_unit_id"-->
+<!--            android:layout_alignParentBottom="true"/>-->
+
+    </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/navigation_menu"
-        app:headerLayout="@layout/navigation_drawer_header"/>
+        app:menu="@menu/navigation_menu"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

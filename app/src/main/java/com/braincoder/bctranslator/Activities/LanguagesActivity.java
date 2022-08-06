@@ -35,7 +35,7 @@ public class LanguagesActivity extends AppCompatActivity {
         binding = ActivityLanguagesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setTitle("");
+        getSupportActionBar().setTitle("Languages");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         init();

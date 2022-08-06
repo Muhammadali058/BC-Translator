@@ -1,5 +1,6 @@
 package com.braincoder.bctranslator.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,12 +11,16 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.braincoder.bctranslator.Models.Languages;
@@ -23,6 +28,13 @@ import com.braincoder.bctranslator.R;
 import com.braincoder.bctranslator.Utils.DB;
 import com.braincoder.bctranslator.Utils.HP;
 import com.braincoder.bctranslator.databinding.ActivityTranslatorBinding;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
@@ -43,6 +55,7 @@ public class TranslatorActivity extends AppCompatActivity {
     List<Languages> languages;
     DB db;
     boolean isModelDownloaded = false;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,35 +66,120 @@ public class TranslatorActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Translator");
 
         runFirstTime();
-        init();
-        setNavigationDrawer();
-        initButtonClicks();
-        setLanguageAdapters();
-
-        // Create translator
-        String fromLanguage = HP.getLanguageCode(this, languages.get(binding.sourceLanguage.getSelectedItemPosition()).getLanguage());
-        String toLanguage = HP.getLanguageCode(this, languages.get(binding.targetLanguage.getSelectedItemPosition()).getLanguage());
-        translatorOptions = new TranslatorOptions.Builder()
-                .setSourceLanguage(fromLanguage)
-                .setTargetLanguage(toLanguage)
-                .build();
-        translator = Translation.getClient(translatorOptions);
-        downloadModelIfNeeded();
     }
 
     private void runFirstTime(){
         prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-
         boolean isFirstTime = prefs.getBoolean("isFirstTime", true);
+
         if(isFirstTime){
             Intent intent = new Intent(TranslatorActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
+        }else{
+            initAds();
+            init();
+            setNavigationDrawer();
+            initButtonClicks();
+            setLanguageAdapters();
+
+            // Create translator
+            String fromLanguage = HP.getLanguageCode(this, languages.get(binding.sourceLanguage.getSelectedItemPosition()).getLanguage());
+            String toLanguage = HP.getLanguageCode(this, languages.get(binding.targetLanguage.getSelectedItemPosition()).getLanguage());
+            translatorOptions = new TranslatorOptions.Builder()
+                    .setSourceLanguage(fromLanguage)
+                    .setTargetLanguage(toLanguage)
+                    .build();
+            translator = Translation.getClient(translatorOptions);
+            downloadModelIfNeeded();
         }
+    }
+
+    private void initAds(){
+        MobileAds.initialize(this);
+
+        // For banner ad
+//        binding.bannerAdView.loadAd(adRequest);
+
+        loadAd();
+    }
+
+    private void loadAd(){
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        // For interstitial ad
+        InterstitialAd.load(this, getString(R.string.interstitial_ad_unit_id), adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                Log.d("Ad Message", "Failed to load Ad");
+//                loadAd();
+            }
+
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                super.onAdLoaded(interstitialAd);
+
+                mInterstitialAd = interstitialAd;
+
+            }
+        });
+    }
+
+    private void showAd(){
+        if(mInterstitialAd != null){
+            mInterstitialAd.show(TranslatorActivity.this);
+
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    // Called when ad is dismissed.
+                    // Set the ad reference to null so you don't show the ad a second time.
+                    mInterstitialAd = null;
+//                    loadAd();
+                    finish();
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    // Called when ad fails to show.
+                    mInterstitialAd = null;
+//                    loadAd();
+                    finish();
+                }
+
+            });
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mInterstitialAd != null){
+            showAd();
+        }else {
+            Log.d("Ad Message", "Failed to load Ad");
+            finish();
+        }
+
+        super.onBackPressed();
     }
 
     private void init(){
         db = new DB(this);
+
+        binding.sourceBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i== EditorInfo.IME_ACTION_GO){
+                    translate(binding.sourceBox.getText().toString());
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
     }
 
     private void setNavigationDrawer(){
@@ -101,9 +199,6 @@ public class TranslatorActivity extends AppCompatActivity {
                     case R.id.settings:
                         Intent settingsIntent = new Intent(TranslatorActivity.this, SettingsActivity.class);
                         startActivityForResult(settingsIntent, 124);
-                        closeDrawer();
-                        break;
-                    case R.id.about:
                         closeDrawer();
                         break;
                     case R.id.exit:

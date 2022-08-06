@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
             language.setLanguageCode("ur");
             db.addLanguage(language);
 
-
             list = new ArrayList<>();
             for(String lan: HP.languages){
                 list.add(new Languages(lan));
